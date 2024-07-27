@@ -106,11 +106,42 @@ def get_news_list(url):
     return news_articles
 
 
+def show_news(url): 
+    
+    response = requests.get(url, headers=HEADERS)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Получаем статьи
+    text = soup.find('div', class_='article-body-content')
+    title = soup.find('div', class_='article-title').text
+    title = clean_text(title)
+    # Выводим заголовок статьи
+    print(f'{c[4]}{title}{c[0]}')
+
+    # Выводим текст статьи
+    for p in text.find_all('p'):
+        print(p.text)
+        #print('\n')
+
+    # Выводим ссылку на источник
+    print(f"\nАвторские права принадлежат Minghui.org.\nИсточник: {url}")
+
 def main():
     try:
         news_list = get_news_list(url)
         for article in news_list:
+            i = news_list.index(article)
+            print(f'[{i+1}]')
             article.print()
+
+        print(f"Введите номер статьи для просмотра:")
+        choice = input()
+
+        if choice.isdigit():
+            show_news(news_list[int(choice)-1].link)
+        else:
+            print("Некорректный ввод")  
+
     except ConnectionError as e:
         print(f"Ошибка соединения: {e}")
 
