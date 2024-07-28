@@ -49,7 +49,7 @@ def clean_text(text):
 
 def convert_date(date):
 
-    locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+    #locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
     month_names = ['январь', 'февраль', 'март', 'апреля', 'мая', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
 
     # Преобразование месяцев в соответствии с окончанием
@@ -134,13 +134,18 @@ def main():
             print(f'[{i+1}]')
             article.print()
 
-        print(f"Введите номер статьи для просмотра:")
-        choice = input()
+        while True:
+            print(f"Введите номер статьи для просмотра:")
+            choice = input()
 
-        if choice.isdigit():
-            show_news(news_list[int(choice)-1].link)
-        else:
-            print("Некорректный ввод")  
+            if choice.isdigit():
+                if int(choice)<=limit:
+                    show_news(news_list[int(choice)-1].link)
+                    break
+                else:
+                    print('Статьи с таким номером не существует')
+            else:
+                print("Некорректный ввод")  
 
     except ConnectionError as e:
         print(f"Ошибка соединения: {e}")
