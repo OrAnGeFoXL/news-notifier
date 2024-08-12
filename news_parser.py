@@ -7,14 +7,23 @@ import locale
 
 from dataclasses import dataclass
 
+from simple_term_menu import TerminalMenu
 #Задаем заголовок для парсера
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
 }
 
 #Задаем URL для парсинга сайта
-url = 'https://mingh.org/cc/24/' #статьи на тему совершенствования
-
+url = 'https://mingh.org/cc/46/' #статьи на тему совершенствования
+url_list = [
+        'https://mingh.org/cc/46/', #традиционная культура
+        'https://mingh.org/cc/45/', #мнение и точка зрения
+        'https://mingh.org/cc/24/', #совершенствование
+        'https://mingh.org/cc/33/', #новости и события
+        'https://mingh.org/cc/1/',  #преследование
+        'https://mingh.org/cc/14/', #карма и добродетель
+        'https://mingh.org/cc/40/', #материалы
+        ]
 #Количество просматриваемых новостей
 limit = 5
 
@@ -50,7 +59,7 @@ def clean_text(text):
 def convert_date(date):
 
     #locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
-    month_names = ['январь', 'февраль', 'март', 'апреля', 'мая', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+    month_names = ['январь', 'февраль', 'март', 'апреля', 'мая', 'июнь', 'июль', 'авг.', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
 
     # Преобразование месяцев в соответствии с окончанием
     month_name_mapping = {month_names[i]: datetime.strptime(f'{i+1}', '%m').strftime('%B') for i in range(len(month_names))}
@@ -128,7 +137,19 @@ def show_news(url):
 
 def main():
     try:
-        news_list = get_news_list(url)
+        list = [
+        'традиционная культура',
+        'мнение и точка зрения',
+        'совершенствование',
+        'новости и события',
+        'преследование',
+        'карма и добродетель',
+        'материалы'
+        ]
+
+        menu = TerminalMenu(list)
+
+        news_list = get_news_list(url_list[menu.show()])
         for article in news_list:
             i = news_list.index(article)
             print(f'[{i+1}]')
@@ -152,4 +173,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
+ 
