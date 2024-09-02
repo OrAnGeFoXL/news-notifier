@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from datetime import datetime
-
+import os
 import locale
 
 from dataclasses import dataclass
@@ -59,7 +59,7 @@ def clean_text(text):
 def convert_date(date):
 
     #locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
-    month_names = ['январь', 'февраль', 'март', 'апреля', 'мая', 'июнь', 'июль', 'авг.', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+    month_names = ['январь', 'февраль', 'март', 'апреля', 'мая', 'июнь', 'июль', 'авг.', 'сен.', 'октябрь', 'ноябрь', 'декабрь']
 
     # Преобразование месяцев в соответствии с окончанием
     month_name_mapping = {month_names[i]: datetime.strptime(f'{i+1}', '%m').strftime('%B') for i in range(len(month_names))}
@@ -115,6 +115,20 @@ def get_news_list(url):
     return news_articles
 
 
+def print_wrapped(text):
+  terminal_width = os.get_terminal_size().columns
+  words = text.split()
+  current_line = []
+  for word in words:
+    if len(' '.join(current_line + [word])) <= terminal_width:
+      current_line.append(word)
+    else:
+      print(' '.join(current_line))
+      current_line = [word]
+  if current_line:
+    print(' '.join(current_line))
+
+
 def show_news(url): 
     
     response = requests.get(url, headers=HEADERS)
@@ -129,7 +143,8 @@ def show_news(url):
 
     # Выводим текст статьи
     for p in text.find_all('p'):
-        print(p.text)
+        print_wrapped(p.text)
+        #print(p.text)
         #print('\n')
 
     # Выводим ссылку на источник
